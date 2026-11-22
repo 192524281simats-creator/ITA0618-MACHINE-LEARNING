@@ -1,0 +1,30 @@
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.preprocessing import LabelEncoder
+
+data = pd.DataFrame({
+    'Weather': ['Sunny', 'Sunny', 'Rainy', 'Rainy'],
+    'Temperature': ['Hot', 'Cold', 'Hot', 'Cold'],
+    'Play': ['No', 'No', 'Yes', 'Yes']
+})
+
+encoders = {}
+for col in data.columns:
+    le = LabelEncoder()
+    data[col] = le.fit_transform(data[col])
+    encoders[col] = le
+
+X = data[['Weather', 'Temperature']]
+y = data['Play']
+
+model = DecisionTreeClassifier(criterion='entropy')
+model.fit(X, y)
+
+sample = [[
+    encoders['Weather'].transform(['Rainy'])[0],
+    encoders['Temperature'].transform(['Hot'])[0]
+]]
+
+result = model.predict(sample)
+
+print("Decision:", encoders['Play'].inverse_transform(result))
